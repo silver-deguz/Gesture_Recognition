@@ -70,62 +70,68 @@ class HandsDataLoader:
                 img_counter = 1
                 class_counter = 1
 
-                for img in os.listdir(gesture_path):
+                #checkpoint
+                checkpoint_path = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture
+                if len(os.listdir(checkpoint_path)) == 200: #if processed 200 images
+                    print("already finished processing gesture ",gesture," for user ",person)
+                    continue
+                else:
+                    for img in os.listdir(gesture_path):
 
-                    print("processing... ", gesture_path+'/'+img) #is absolute path of image
-                    
-                    r = plt.imread(gesture_path + '/' + img)
+                        print("processing... ", gesture_path+'/'+img) #is absolute path of image
+                        
+                        r = plt.imread(gesture_path + '/' + img)
 
-                    contours = find_contours(r, 0.35) #find hand
+                        contours = find_contours(r, 0.35) #find hand
 
-                    # #plotting contours
-                    # fig, ax = plt.subplots()
-                    # ax.imshow(r, interpolation='nearest', cmap=plt.cm.gray)
+                        # #plotting contours
+                        # fig, ax = plt.subplots()
+                        # ax.imshow(r, interpolation='nearest', cmap=plt.cm.gray)
 
-                    # for n, contour in enumerate(contours):
-                    #     ax.plot(contour[:, 1], contour[:, 0], linewidth=2)
-                    # ax.axis('image')
-                    # ax.set_xticks([])
-                    # ax.set_yticks([])
-                    # #plt.show()
-                    # ################
+                        # for n, contour in enumerate(contours):
+                        #     ax.plot(contour[:, 1], contour[:, 0], linewidth=2)
+                        # ax.axis('image')
+                        # ax.set_xticks([])
+                        # ax.set_yticks([])
+                        # #plt.show()
+                        # ################
 
-                    #find midpoint of hand
-                    max_val = contours[0][:,1].max()
-                    min_val = contours[0][:,1].min()
-                    mid_point = int((max_val+min_val)/2)
+                        #find midpoint of hand
+                        max_val = contours[0][:,1].max()
+                        min_val = contours[0][:,1].min()
+                        mid_point = int((max_val+min_val)/2)
 
-                    # #to find vertical, not needed
-                    # vmax_val = contours[0][:,0].max()
-                    # vmin_val = contours[0][:,0].min()
-                    # vmid_point = int((vmax_val+vmin_val)/2)
+                        # #to find vertical, not needed
+                        # vmax_val = contours[0][:,0].max()
+                        # vmin_val = contours[0][:,0].min()
+                        # vmid_point = int((vmax_val+vmin_val)/2)
 
-                    # # prints marker in center of hand
-                    # #plt.figure()
-                    # plt.imshow(r,cmap=plt.cm.gray)
-                    # plt.plot(mid_point,vmid_point, marker = "+", color = 'r')
-                    # plt.show()
+                        # # prints marker in center of hand
+                        # #plt.figure()
+                        # plt.imshow(r,cmap=plt.cm.gray)
+                        # plt.plot(mid_point,vmid_point, marker = "+", color = 'r')
+                        # plt.show()
 
-                    cropped_img = self.crop_img(mid_point,r)
+                        cropped_img = self.crop_img(mid_point,r)
 
-                    #rotated_img = self.rotate_image(cropped_img,-15)
+                        #rotated_img = self.rotate_image(cropped_img,-15)
 
-                    # plt.figure()
-                    # f, ax = plt.subplots(2, sharey=True)
-                    # ax[0].imshow(cropped_img, cmap=plt.cm.gray)
-                    # ax[1].imshow(rotated_img, cmap=plt.cm.gray)
-                    # plt.show()
+                        # plt.figure()
+                        # f, ax = plt.subplots(2, sharey=True)
+                        # ax[0].imshow(cropped_img, cmap=plt.cm.gray)
+                        # ax[1].imshow(rotated_img, cmap=plt.cm.gray)
+                        # plt.show()
 
-                    img_index = str(img_counter).zfill(4)
-                    class_index = str(class_counter).zfill(2)
-                    new_dir_save = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture + '/'
+                        img_index = str(img_counter).zfill(4)
+                        class_index = str(class_counter).zfill(2)
+                        new_dir_save = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture + '/'
 
-                    plt.imshow(cropped_img, cmap=plt.cm.gray) 
-                    plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
-                    plt.close()
+                        plt.imshow(cropped_img, cmap=plt.cm.gray) 
+                        plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
+                        plt.close()
 
-                    img_counter += 1
-                    class_counter += 1
+                        img_counter += 1
+                        class_counter += 1
 
 
 
