@@ -122,6 +122,7 @@ class HandsDataLoader:
 
                     plt.imshow(cropped_img, cmap=plt.cm.gray) 
                     plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
+                    plt.close()
 
                     img_counter += 1
                     class_counter += 1
