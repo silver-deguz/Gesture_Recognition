@@ -3,10 +3,13 @@ __author__ = "Erik Seetao, Hayk Hovhannisyan"
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+#import tensorflow as tf
+import os
+
+import pickle
 
 from skimage.measure import find_contours
-
-import os 
+#from sklearn.model_selection import train_test_split 
 
 
 class HandsDataLoader:
@@ -14,6 +17,17 @@ class HandsDataLoader:
         self.path = path
         self.width = 120 #height is 240, so plus minus width on both sides gives 240 as square image
         self.newdirectory = newdirectory
+        self.label2intb = {'palm'       : 0,
+                            'l'          : 1,
+                            'fist'       : 2,
+                            'fist_moved' : 3,
+                            'thumb'      : 4,
+                            'index'      : 5,
+                            'ok'         : 6,
+                            'palm_moved' : 7,
+                            'c'          : 8,
+                            'down'       : 9
+                            }
 
 
     def crop_img(self, mid_point, image):
@@ -50,13 +64,15 @@ class HandsDataLoader:
 
         return result
 
-    def process_img(self):
+    def process_img(self,aug=False):
         '''
         Data preprocessing on images and saves them to appropriate dataset folders
         '''
 
         print("list dir is", os.listdir(self.path+'/leapGestRecog')) #prints out user list
 
+        output_im = []
+        output_lb = []
 
         for person in os.listdir(self.path+'/leapGestRecog'):
             user_path = self.path+'/leapGestRecog/' + person + '/'
@@ -70,7 +86,7 @@ class HandsDataLoader:
                 img_counter = 1
                 class_counter = 1
 
-                #checkpoint
+                #checkpoint, used for processing actual pngs
                 checkpoint_path = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture
                 if len(os.listdir(checkpoint_path)) == 200: #if processed 200 images
                     print("already finished processing gesture ",gesture," for user ",person)
@@ -101,7 +117,7 @@ class HandsDataLoader:
                         min_val = contours[0][:,1].min()
                         mid_point = int((max_val+min_val)/2)
 
-                        # #to find vertical, not needed
+                        # #to find vertical, only needed for crosshairs plot
                         # vmax_val = contours[0][:,0].max()
                         # vmin_val = contours[0][:,0].min()
                         # vmid_point = int((vmax_val+vmin_val)/2)
@@ -113,26 +129,46 @@ class HandsDataLoader:
                         # plt.show()
 
                         cropped_img = self.crop_img(mid_point,r)
-
-                        #rotated_img = self.rotate_image(cropped_img,-15)
-
+                        downsampled_img = cropped_img[::2,::2]
+                        # print("downsampled img shape is", downsampled_img.shape)
                         # plt.figure()
-                        # f, ax = plt.subplots(2, sharey=True)
-                        # ax[0].imshow(cropped_img, cmap=plt.cm.gray)
-                        # ax[1].imshow(rotated_img, cmap=plt.cm.gray)
+                        # plt.imshow(downsampled_img)
                         # plt.show()
+                        mirrored_img = np.flip(downsampled_img,axis=1)
 
-                        img_index = str(img_counter).zfill(4)
-                        class_index = str(class_counter).zfill(2)
-                        new_dir_save = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture + '/'
+                        output_im.append(mirrored_img)
+                        output_lb.append(self.label2intb[gesture[3:]])
 
-                        plt.imshow(cropped_img, cmap=plt.cm.gray) 
-                        plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
-                        plt.close()
+                        # class_index = str(class_counter).zfill(2)
+                        # new_dir_save = self.path + '/' + self.newdirectory + '/' + person + '/' + gesture + '/'
+
+                        # if aug == False:
+                        #     img_index = str(img_counter).zfill(4)
+                        #     plt.imshow(downsampled_img, cmap=plt.cm.gray) 
+                        #     plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
+                        # if aug == True:
+                        #     img_index = str(img_counter+200).zfill(4)
+                        #     plt.imshow(mirrored_img, cmap=plt.cm.gray) 
+                        #     plt.savefig(new_dir_save + "frame_" + person + "_" + class_index + "_" + img_index + ".png")
+                        # plt.close()
 
                         img_counter += 1
-                        class_counter += 1
+                class_counter += 1
+        print("pickling files...")
 
+        if not os.path.exists(self.newdirectory):
+            print("Output file does not exist. Creating new file...")
+            os.makedirs(self.newdirectory)
+
+        M = 5000
+        for i in range(0,4): #from 20k/5k
+            begin = M*i
+            end   = M*(i+1) 
+            print("begin and end:",begin,end)
+            temp = output_im[begin:end]
+            out = self.path + '/' + self.newdirectory + '/' + "output_im_" + str(i) +".p"
+            #out  = base_path_out + "output_im_" + str(i) +".p"
+            pickle.dump(temp,open( out, "wb" ) )
 
 
     def prep_folder(self):
@@ -158,6 +194,7 @@ if __name__ == '__main__':
     path = os.path.dirname(os.path.abspath(__file__)) #/Users/eseetao/Documents/Code
     #print(path)
 
-    data = HandsDataLoader(path,"leapGestAug")
-    data.prep_folder()
-    data.process_img()
+    data = HandsDataLoader(path,"leapGestMirror")
+    #data.prep_folder()
+
+    #data.process_img(aug=False)
