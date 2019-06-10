@@ -10,31 +10,32 @@ demo notebook along with its required files tested on DSMLP server with 'launch-
 
 
 # Files
-=================
 <pre>
-demo_HAM10000_VGG13.ipynb -- Run a demo of our code 
+Gesture_Recognition_DEMO.ipynb -- Run a demo of our code 
         |
-        |----- imports VGG-13 model trained from the training notebook below 
-        |----- evalutes a example testset of 10 images picked from the complete dataset 
+        |----- imports trained CNN model trained from the training notebook below 
+        |----- evalutes a example testset of 1,000 images picked from the complete dataset 
         
-HAM10000_VGG13_training.ipynb -- Run the training of our VGG-13 model on complete HAM10000 dataset
+Gesture_Recognition.ipynb -- Run the training of our CNN model on complete Hand Gesture dataset
         |
         |----- dataset preprocessing (reshaping, nomalization, one-hot labels)
         |----- VGG-13 model training (fitting) and plotting of training acc/loss history
         |----- LeNet-5 model training (fitting) and plotting of training acc/loss history as comparison
         
-utility.py -- Implements some helper functions for training and displaying
+utility.py -- Implements some helper functions for training and displaying reults
         |
         |----- train-test separation on data and labels 
-        |----- image normalization to (0,1)
-        |----- convert to one-hot labels
-        |----- plotting tools such as training accuracy line plots and example image displays
+        |----- converting to one-hot labels
+        |----- plotting tools such as training accuracy and example image displays
 
-assets/vgg13_model.json -- Our VGG-13 network architecture definition
-      /vgg13_model.h5   -- Trained parameters of VGG-13 network on HAM10000 datasets
-      /images_test.npy  -- Zipped numpy binary file of arrays of test images
-      /labels_test.npy  -- Zipped numpy binary file of arrays of test labels
+my_CNN.h5 -- trained network parameters/weights 
+
+data_DEMO -- containes data for the demo 
+        |
+        |----- data_DEMO.npy = numpy file of test data (1,000 images)
+        |----- labels_DEMO.npy = numpy file for test labels
+
 </pre>
 
 # DEMO
-The Gesture_Recognition_DEMO.ipynb notebook takes a test set 1,000 images 
+The Gesture_Recognition_DEMO.ipynb notebook takes a test set 1,000 images and uses the network parameters trained and saved as 'my_CNN.h5' and classfies them.
