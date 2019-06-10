@@ -24,6 +24,7 @@ Gesture_Recognition_DEMO.ipynb -- Run a demo of our code
         
 utility.py -- Implements some helper functions for training and displaying reults
         |
+        |----- data loader
         |----- train-test separation on data and labels 
         |----- converting to one-hot labels
         |----- plotting tools such as training accuracy and example image displays
