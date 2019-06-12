@@ -24,7 +24,7 @@ Gesture_Recognition.ipynb -- Run the training of our CNN model on complete Hand 
 Gesture_Recognition_DEMO.ipynb -- Run a demo of our code 
         |
         |----- imports trained CNN model trained from the training notebook below 
-        |----- evalutes a example testset of 1,000 images picked from the complete dataset 
+        |----- evaluates on example testset of 1,000 images picked from the complete dataset 
         
 utility.py -- Implements some helper functions for training and displaying reults
         |
