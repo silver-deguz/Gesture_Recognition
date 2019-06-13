@@ -8,7 +8,7 @@ Install package 'keras ' as follows : $ pip install --user keras
 
 demo notebook along with its required files tested on DSMLP server with 'launch-tf-gpu.sh'
 
-Files ran on Python 3, library version information:
+Files ran on Python 3 on virtual GPU with 16GB RAM, library version information:
 - keras: v.2.1.6
 - tensorflow: v. 1.12.0
 - sklearn: v.0.20.3
